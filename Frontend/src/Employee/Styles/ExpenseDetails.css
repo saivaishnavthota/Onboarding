@@ -1,0 +1,233 @@
+
+.expense-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: #f3f4f6; /* light gray */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Card */
+.expense-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+  color: rgb(7, 7, 7);
+}
+
+.tab.active {
+  border-bottom: 2px solid #2563eb;
+  font-weight: bold;
+  color:blue;
+  background: none;
+}
+
+/* Headings */
+form h2,
+.history h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+/* Form fields */
+form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Form row */
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.form-row > div {
+  flex: 1;
+  min-width: 150px;
+}
+
+
+.checkbox-label{
+  display: inline-block;           
+  cursor: pointer;  
+  gap:10px;      
+  white-space: nowrap;  
+}
+
+/* Buttons */
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-clear {
+  background: #e5e7eb;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+  color: black;
+}
+
+.btn-clear:hover {
+  background: #656666;
+}
+
+.btn-submit {
+  background: #2563eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+
+.btn-hide{
+    border-radius: 25px;;
+}
+
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  right: 0px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.history-item strong {
+  font-size: 14px;
+}
+
+ .status {
+  padding: 14px 12px;
+  border-radius: 9999px;
+  margin-left: 10px;
+} 
+.status-approved {
+  background-color: #dcfce7; 
+  color: #15803d;           
+  padding:  0.75rem 0.5rem;
+  border-radius: 9999px;    
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-rejected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;  /* or another color for rejected */
+}
+
+.status-pending {
+  background-color:#f79047;; /* Tailwind orange-500 */
+  color: white;
+  padding: 0.75rem ;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;/* Pending = orange */
+}
+
+@media (min-width: 600px) {
+  .history-row {
+    flex-direction: column;    /* stack items */
+    align-items: flex-start;   /* align left */
+    gap: 8px;
+  }
+
+  .history-actions {
+    width: 100%;               /* take full width */
+    justify-content: space-between;
+  }
+}
+.rejection-reason {
+  color: #d9534f; 
+}
+/* Filters container */
+.filters {
+  display: flex;
+  justify-content: center;  /* Center horizontally */
+  align-items: center;
+  gap: 20px; /* spacing between year, month, and clear button */
+  margin-bottom: 16px;
+}
+
+/* Each filter (label + select) */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-weight: bold;
+}
+.filter-group select {
+  width: 160px;       
+  height: 40px;       
+  padding: 6px 10px;  
+  font-size: 16px;    
+  border: 1px solid #ccc;
+  border-radius: 8px; 
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus {
+  border-color: #007bff; 
+  outline: none;
+}

@@ -1,0 +1,23 @@
+.form-box {
+  background: #fff;
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.btn-create {
+  background-color: #007bff; 
+  font-weight: bold;
+  border: none;
+  padding: 10px;
+  transition: 0.3s ease;
+}
+
+.btn-create:hover {
+  background-color: #0056b3;
+}
+.center-btn {
+  display: flex;
+  justify-content: center;
+}
+

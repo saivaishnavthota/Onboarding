@@ -1,0 +1,126 @@
+import { useState, useEffect } from "react"; 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
+import EmployeeAttendence from "./EmployeeAttendence";
+import EmployeeUploadDocs from "./EmployeeUploadDocs"
+import ApplyLeave from "./ApplyLeave";
+import UpdatePassword from "./UpdatePassword";
+import Logo from "../../assets/Nxzen-logo.jpg"; 
+import Profile from "./Profile";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faCalendarAlt,
+  faPaperPlane,
+  faUpload,
+  faKey,
+  faCircleUser,
+  faCoins
+} from "@fortawesome/free-solid-svg-icons";
+import "../Styles/EmployeeDashboard.css"
+import ExpenseDetails from "./ExpenseDetails";
+
+export default function EmployeeDashboard() {
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) setIsOpen(false);
+      else setIsOpen(true);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) setUsername(storedUser);
+  }, []);
+
+  const menuItems = [
+    { name: "Add Attendance", icon: faCalendarAlt, path: "attendance" },
+    { name: "Apply Leave", icon: faPaperPlane, path: "apply-leave" },
+    { name: "Upload Documents", icon: faUpload, path: "upload-docs" },
+    { name: "Submit Expense", icon: faCoins, path: "submit-expense" },
+    { name: "Set Password", icon: faKey, path: "change-password" },
+  ];
+
+  return (
+    <div className="dashboard">
+      {/* Header */}
+      <header className="header">
+        <div className="logo" onClick={() => navigate("/")}>
+          <img src={Logo} alt="Company Logo" className="logo-img" />
+          <h2 className="logo-text">Employee Dashboard</h2>
+        </div>
+         <div
+    className="profile"
+    style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%", cursor: "pointer" }}
+    onClick={() => navigate("/employee-dashboard/profile")} 
+  >
+          <FontAwesomeIcon icon={faCircleUser} size="2x" />
+          <span>{username || "Guest"}</span>
+        </div>
+      </header>
+
+      <div className="main">
+        {/* Toggle Sidebar */}
+        <button className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+          <FontAwesomeIcon icon={isOpen ? faArrowLeft : faArrowRight} />
+        </button>
+
+        {/* Sidebar */}
+        <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
+          <nav>
+            {menuItems.map((item, idx) => {
+              const isActive = location.pathname.endsWith(item.path);
+              return (
+                <div key={idx} className={`menu-item ${isActive ? "active" : ""}`}>
+                  <Link
+                    to={`/employee-dashboard/${item.path}`}
+                    className="menu-link"
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
+                    <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                    {isOpen && <span className="menu-text">{item.name}</span>}
+                  </Link>
+                  {!isOpen && <span className="tooltip">{item.name}</span>}
+                </div>
+              );
+            })}
+          </nav>
+        </aside>
+
+        {/* Content Area */}
+        <main className="content">
+          <Routes>
+            {/* Redirect default to attendance */}
+            <Route index element={<Navigate to="attendance" replace />} />
+
+            <Route path="attendance" element={<EmployeeAttendence />}/> 
+            <Route path="upload-docs" element={<EmployeeUploadDocs />} />
+            <Route path="apply-leave" element={<ApplyLeave />} />
+            <Route path="submit-expense" element={<ExpenseDetails/>} />
+            <Route path="change-password" element={<UpdatePassword />} />
+            <Route path="profile" element={<Profile />} />
+          </Routes>
+        </main>
+      </div>
+<footer className={`footer ${isOpen ? "sidebar-open" : "sidebar-collapsed"}`}>
+  <div className="footer-content container">
+    <span>&copy; {new Date().getFullYear()} Nxzen Company. All rights reserved.</span>
+    <div className="footer-links">
+      <a href="https://www.nxzen.com" target="_blank" rel="noopener noreferrer">Website</a>
+  
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+  );
+}

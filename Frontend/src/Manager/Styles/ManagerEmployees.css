@@ -1,0 +1,115 @@
+/* Center table on page */
+.manager-employees {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    width: 100%;
+    min-height: 80vh;
+    background-color: #f3f4f6;
+  }
+  
+  /* Table container */
+  .table-container {
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    overflow-x: auto;
+  }
+  
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  
+  th, td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    text-align: center !important
+  }
+  
+  th {
+    background-color: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  tbody tr:hover {
+    background-color: #eef2ff;
+  }
+  
+  /* Buttons */
+  .btn-edit, .btn-cancel, .btn-submits {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    margin: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .btn-edit {
+    background-color: #facc15; /* amber */
+    color: #000;
+  }
+  
+  .btn-cancel {
+    background-color: #ef4444; /* red */
+    color: #fff;
+  }
+  
+  .btn-submit {
+    background-color: #4f46e5; /* indigo */
+    color: #fff;
+  }
+  
+  /* Dropdown */
+  .project-select {
+    padding: 5px 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 0.85rem;
+    min-width: 160px;
+  }
+  
+  .project-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 3px #4f46e5;
+    outline: none;
+  }
+  
+  /* Toast messages */
+  .toast-message {
+    max-width: 400px;
+    margin: 15px auto;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+  
+  .toast-message.success {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .toast-message.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .text-muted {
+    color: #999;
+  }
+  

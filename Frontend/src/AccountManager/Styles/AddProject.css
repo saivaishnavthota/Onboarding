@@ -1,0 +1,195 @@
+/* AddProject.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9fafb;
+  }
+  
+  .add-project-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .add-project-card {
+    width: 100%;
+    max-width: 950px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .tab-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.2s ease;
+  }
+  
+  .tab-btn:hover {
+    color: #4f46e5;
+  }
+  
+  .tab-btn.active {
+    color: #4f46e5;
+    font-weight: bold;
+    border-color: #4f46e5;
+  }
+  
+  /* Form */
+  .form-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .add-project-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .add-project-form label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+    color: #444;
+  }
+  
+  .add-project-form input,
+  .add-project-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .add-project-form input:focus,
+  .add-project-form textarea:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+  
+  .add-project-form textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  
+  /* Actions */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .form-actions button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  button.reset-btn {
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+  }
+  
+  button.reset-btn:hover {
+    background-color: #e5e7eb;
+  }
+  
+  button.submit-btn {
+    background-color: #4f46e5;
+    color: white;
+  }
+  
+  button.submit-btn:hover {
+    background-color: #4338ca;
+  }
+  
+  /* Table */
+  .project-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  .project-table th,
+  .project-table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  .project-table th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .project-table tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  
+  .project-table tr:hover {
+    background-color: #f1f5f9;
+  }
+  /* Small view buttons */
+.view-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border: 1px solid #4f46e5;
+    background-color: #f9fafb;
+    color: #0c0c0c;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .view-btn:hover {
+    background-color: #4f46e5;
+    color: white;
+  }
+  
+  /* Expanded details box */
+  .details-box {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #333;
+    white-space: pre-line; /* Keeps line breaks */
+  }
+ 

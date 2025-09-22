@@ -1,0 +1,121 @@
+/* Center container */
+.new-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;   
+  background: #f5f6fa;
+  padding: 2rem;
+}
+
+/* Card-like form box */
+.employee-details {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  max-width: 1000px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Title */
+.employee-details h2 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+.employee-details h4 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #333;
+  font-weight: normal;
+}
+
+/* Grid for fields */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.form-grid label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: #444;
+}
+.form-grid label::after {
+  content: " *";
+  color: red;
+}
+#star::after{
+  content:" ";
+}
+.form-grid input,
+.form-grid textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.full-width {
+  grid-column: span 3;
+}
+
+/* Buttons */
+.button-section {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+button {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.new-button:hover {
+  background: #357abd;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .full-width {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: span 1;
+  }
+  .button-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 16px;
+  color: #666;
+}

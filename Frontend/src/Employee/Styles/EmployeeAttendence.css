@@ -1,0 +1,301 @@
+.attendance-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+ 
+ 
+.table.attendance-table {
+  font-size: 0.85rem;
+  width: 100%;            
+  max-width: 900px;        
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+ 
+.table.attendance-table th,
+.table.attendance-table td {
+  padding: 6px 10px;
+  vertical-align: middle;
+  text-align: center;
+  word-wrap: break-word;    
+}
+ 
+.table.attendance-table select,
+.table.attendance-table input {
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  width: 100%;              
+  min-width: 70px;
+}
+ 
+ 
+.summary-card {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+ 
+.nav-tabs {
+  border-bottom: none;
+  flex-wrap: wrap;        
+}
+.nav-tabs .nav-link {
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #555;
+  font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+  color: #0d6efd;
+  border-bottom: 2px solid #0d6efd;
+  font-weight: 600;
+}
+ 
+ 
+.calendar-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+ 
+.react-calendar {
+  width: 100% !important;    
+  max-width: 900px;
+  font-size: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+ 
+.react-calendar__tile {
+  height: 45px;
+  font-size: 0.9rem;
+  color: black;
+}
+ 
+.react-calendar__tile--now {
+  background: #f1c971 !important;
+  border-radius: 6px;
+  font-weight: bold;
+}
+ 
+@media (max-width: 768px) {
+  .table.attendance-table {
+    font-size: 0.75rem;
+  }
+ 
+  .table.attendance-table th,
+  .table.attendance-table td {
+    padding: 4px 6px;
+  }
+ 
+  .summary-card {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+ 
+  .react-calendar__tile {
+    height: 40px;
+    font-size: 0.8rem;
+  }
+}
+ 
+@media (max-width: 576px) {
+  .table.attendance-table {
+    display: block;          
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+ 
+  .table.attendance-table table {
+    width: 600px;          
+  }
+ 
+  .week-heading {
+    font-size: 0.9rem;
+  }
+ 
+  .react-calendar {
+    font-size: 0.85rem;
+  }
+}
+.toast-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #f8f9fa;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+  animation: fadeIn 0.3s ease-in-out;
+}
+ 
+.toast-message.success {
+  border-left: 5px solid #28a745;
+  color: #28a745;
+}
+ 
+.toast-message.error {
+  border-left: 5px solid #dc3545;
+  color: #f8f6f6;
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.attendance-table th, .attendance-table td {
+  vertical-align: middle;
+  text-align: center;
+}
+.attendance-container {
+  max-width: 1000px;
+  margin:  auto;
+}
+ 
+.attendance-table th, .attendance-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+ 
+.attendance-table th {
+  background-color: #4f46e5;
+  color: white;
+}
+ 
+.attendance-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+ 
+.attendance-table tbody tr:hover {
+  background-color: #eef2ff;
+}
+ 
+button {
+  margin-left: 5px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+ 
+.modal-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.subtask-container {
+  display: flex;
+  flex-direction: column; /* stack vertically */
+  gap: 6px; /* space between cards */
+}
+ 
+.subtask-item {
+  width: 100%; /* full width of the container */
+  background: #f8f9fa;
+  border-left: 6px solid; /* dynamic color from JS */
+  border-bottom: 2px solid;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: all 0.2s ease-in-out;
+}
+ 
+.subtask-item:hover {
+  background: #e9ecef;
+  transform: scale(1.02);
+}
+.daily-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* wraps on smaller screens */
+  background-color: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+ 
+.daily-filter-bar .filter-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+ 
+.daily-filter-bar label {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+ 
+.daily-filter-bar select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  appearance: none; /* clean dropdown arrow */
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+ 
+.daily-filter-bar select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px; /* makes it pill-shaped */
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 70px;
+}
+ 
+.status-present {
+  background-color: #28a745; /* green */
+}
+ 
+.status-wfh {
+  background-color: #007bff; /* blue */
+}
+ 
+.status-leave {
+  background-color: #dc3545; /* red */
+}
+ 
+.status-not-marked {
+  background-color: #6c757d; /* gray */
+}
+ 
+ 

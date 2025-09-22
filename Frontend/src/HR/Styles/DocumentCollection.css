@@ -1,0 +1,136 @@
+.docs-table-wrapper {
+  width: 95%;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+ 
+.table-scroll {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+ 
+.docs-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+ 
+.docs-table th,
+.docs-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  vertical-align: middle;
+  min-width: 100px;
+}
+ 
+.docs-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+ 
+.docs-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+ 
+ 
+.status-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  min-width: 110px;
+  text-align: center;
+}
+ 
+.status-pill.uploaded {
+  background-color: #dcfce7; /* Tailwind bg-green-100 */
+  color: #15803d;           /* Tailwind text-green-700 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;    /* pill shape */
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+ 
+.status-pill.not-uploaded {
+ 
+  background-color: #fee2e2; /* Tailwind bg-red-100 */
+  color: #b91c1c;            /* Tailwind text-red-700 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+ 
+.summary-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #f1f1f1;
+  min-width: 100px;
+  text-align: center;
+}
+ 
+.request-btn {
+  background: #1b81ee;
+  color: #eef1f3;
+  border: none;
+  padding: 6px 14px;
+ 
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+ 
+.request-btn:hover {
+  background: #b8daff;
+}
+ 
+ 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+ 
+.pagination button {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  color: rgb(7, 7, 7);
+  font-size: 13px;
+}
+ 
+.pagination button:hover {
+  background: #f0f0f0;
+}
+ 
+.pagination button.active {
+  background: #007bff;
+  color: rgb(7, 7, 7);
+  border-color: #007bff;
+}
+ 
+.pagination .page-info {
+  margin-left: 15px;
+  font-size: 13px;
+  color: #555;
+}
+.request-log-list{
+  width:300px;
+  text-align:left;
+
+}
