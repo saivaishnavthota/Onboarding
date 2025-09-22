@@ -261,3 +261,31 @@
     gap: 4px;
   }
 }
+.submenu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 40px;
+  padding-left: 5px;
+  gap:10px;
+}
+
+.submenu-link {
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #fffbfb;
+  text-decoration: none;
+}
+
+.submenu-link.active {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.dropdown-arrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+}
+
+.submenu :hover{
+ background-color: #1a252f;
+}

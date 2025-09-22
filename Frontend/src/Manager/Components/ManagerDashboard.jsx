@@ -25,6 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import "../Styles/ManagerDashboard.css"
+import AttendanceDetails from "./AttendanceDetails";
 
 export default function ManagerDashboard() {
   const [isOpen, setIsOpen] = useState(true);
@@ -53,6 +54,7 @@ export default function ManagerDashboard() {
 
   const menuItems = [
     { name: "Employees Attendance", icon: faUserCheck, path: "employees-attendance" },
+    { name: "Employees Attendance Details", icon: faUserCheck, path: "att-details" },
     { name: "Employees", icon: faUserFriends, path: "employees" },
     { name: "Add Attendence", icon: faCalendarAlt, path: "add-attendance" },
     { name: "Apply Leave", icon: faPaperPlane, path: "apply-leave" },
@@ -116,6 +118,7 @@ export default function ManagerDashboard() {
           <Routes>
             <Route index element={<h3>Welcome to Manager Dashboard</h3>} />
             <Route path="add-attendance" element={<ManagerAttendence />} />
+            <Route path="att-details" element={<AttendanceDetails />} />
             <Route path="employees-attendance" element={<ManagerEmployeeAttendence />} />
             <Route path="employees" element={<ManagerEmployees />} />
             <Route path="apply-leave" element={<ManagerApplyLeave />} />

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from database import create_tables_database
-from routes import user_routes, document_routes,locations_routes, attendance_routes,leave_routes,onboarding_routes, calendar_routes,expenses_routes, project_routes
+from routes import user_routes, document_routes,locations_routes, attendance_routes,leave_routes,onboarding_routes, calendar_routes,expenses_routes, project_routes, weekoff_routes
 from middleware.cors import add_cors_middleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -47,3 +47,4 @@ app.include_router(locations_routes.router)
 app.include_router(calendar_routes.router)
 app.include_router(expenses_routes.router)
 app.include_router(project_routes.router)
+app.include_router(weekoff_routes.router)
