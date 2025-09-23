@@ -2,7 +2,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 from contextlib import contextmanager
 
-DATABASE_URL = "postgresql://postgres:root@localhost:5432/Nxzen"
+DATABASE_URL = "postgresql://admin:nxzen%40123@localhost:5432/Nxzen"
 
 engine = create_engine(DATABASE_URL, echo=True)
 

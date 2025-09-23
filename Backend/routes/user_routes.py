@@ -57,10 +57,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         if not verify_password(password, db_user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        session_id, expires_at = create_session(db_user.id, db_user.role, "user", session)
+        #session_id, expires_at = create_session(db_user.id, db_user.role, "user", session)
 
         access_token = create_access_token(
-            data={"sub": db_user.company_email, "session_id": session_id, "role": db_user.role},
+            data={"sub": db_user.company_email, "role": db_user.role},
             expires_delta=timedelta(minutes=60)
         )
 
