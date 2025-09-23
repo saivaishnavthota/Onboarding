@@ -15,11 +15,9 @@ router = APIRouter(prefix="/projects", tags=["Projects"])
 def create_project(
     project: ProjectCreate,
     session: Session = Depends(get_session),
-    # current_user: User = Depends(get_current_user)
+  
 ):
-    # if current_user.role != "HR":
-    #     raise HTTPException(status_code=403, detail="Only Account Manager can create projects")
-
+    
     query = text("""
         INSERT INTO projects (
             project_name, project_objective, client_requirements,
@@ -155,7 +153,7 @@ def get_manager_employees(manager_id: int, session: Session = Depends(get_sessio
 
     employees = session.execute(
         text("""
-            SELECT e.id, e.name, e.email
+            SELECT e.id, e.name, e.company_email
             FROM employees e
             JOIN employee_managers em ON e.id = em.employee_id
             WHERE em.manager_id = :mgr_id
@@ -190,7 +188,7 @@ def get_manager_employees(manager_id: int, session: Session = Depends(get_sessio
         result.append({
             "id": e.id,
             "name": e.name,
-            "email": e.email,
+            "email": e.company_email,
             "hr": hr_names,
             "projects": project_names
         })

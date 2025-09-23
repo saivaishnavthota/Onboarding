@@ -87,7 +87,7 @@ export default function AssignLeaveHolidays() {
     axios
       .get(`${API_BASE_URL}/calendar/by-location/${selectedLocation}`)
       .then((res) => {
-        setHolidays(res.data || []);
+        setHolidays(res.data.data || []);
         setShowHolidaysTable(true);
         setShowCalendar(false);
         toast.info("Showing holidays table!");
@@ -254,14 +254,15 @@ export default function AssignLeaveHolidays() {
                   <th>Reason</th>
                 </tr>
               </thead>
-              <tbody>
-                {holidays.map((h, i) => (
-                  <tr key={i}>
-                    <td>{h.holiday_date || h.date}</td>
-                    <td>{h.holiday_name || h.reason}</td>
-                  </tr>
-                ))}
-              </tbody>
+            <tbody>
+  {Array.isArray(holidays) && holidays.map((h, i) => (
+    <tr key={i}>
+      <td>{h.holiday_date || h.date}</td>
+      <td>{h.holiday_name || h.reason}</td>
+    </tr>
+  ))}
+</tbody>
+
             </table>
           </div>
         )}

@@ -154,7 +154,7 @@ export default function ManagerEmployees() {
                     ) : emp.projects && emp.projects.length > 0 ? (
                       <span>{emp.projects.join(", ")}</span>
                     ) : (
-                      <span className="text-muted">No Projects</span>
+                      <span className="text-muted">No Projects Assigned</span>
                     )}
                   </td>
                   <td>

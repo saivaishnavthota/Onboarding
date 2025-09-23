@@ -12,7 +12,7 @@
 .docs-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: #fbf9f9;
   box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
 }
  
@@ -25,7 +25,7 @@
 }
  
 .docs-table th {
-  background-color: #f4f4f4;
+  background-color: #fafafa;
   font-weight: bold;
   text-transform: capitalize;
 }
@@ -34,6 +34,9 @@
   background-color: #fafafa;
 }
  
+.docs-table th {
+  color: black;
+}
  
 .status-pill {
   display: inline-block;

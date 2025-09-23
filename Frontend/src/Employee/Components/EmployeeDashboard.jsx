@@ -63,7 +63,7 @@ export default function EmployeeDashboard() {
     onClick={() => navigate("/employee-dashboard/profile")} 
   >
           <FontAwesomeIcon icon={faCircleUser} size="2x" />
-          <span>{username || "Guest"}</span>
+          <span>{username }</span>
         </div>
       </header>
 

@@ -29,10 +29,12 @@ export default function EmployeeAttendence() {
   const [currentDateKey, setCurrentDateKey] = useState(null);
   const [subTaskInput, setSubTaskInput] = useState({});
   const [toast, setToast] = useState({ message: null, isError: false });
-  const [editingSubTask, setEditingSubTask] = useState(null); // { dateKey, index }
+  const [editingSubTask, setEditingSubTask] = useState(null); 
   const [dailyData, setDailyData] = useState([]); // store fetched daily attendance
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1-12
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [disabledDays, setDisabledDays] = useState([]);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -81,6 +83,17 @@ useEffect(() => {
 }, [activeTab]);
 
 
+const toggleDayDisable = (date) => {
+  const dayName = date.toLocaleDateString("en-US", { weekday: "long" }); // e.g. "Monday"
+  setDisabledDays((prev) => {
+    if (!prev.includes(dayName)) {
+      if (prev.length >= 2) return prev; // still restrict to 2 selections
+      return [...prev, dayName];
+    } else {
+      return prev.filter((d) => d !== dayName);
+    }
+  });
+};
 
 
   const formatDate = (date) => {
@@ -186,6 +199,29 @@ useEffect(() => {
     return colors[index];
   };
 
+  useEffect(() => {
+  const fetchWeekoffs = async () => {
+    try {
+      const empId = localStorage.getItem("empID");
+      if (!empId) return;
+
+      const res = await axios.get(
+        `http://127.0.0.1:8000/weekoffs/${empId}`, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // res.data is an array of weekoffs
+      // Map all saved off_days into disabledDays
+      const savedDisabledDays = res.data.flatMap((weekoff) => weekoff.off_days);
+      setDisabledDays(savedDisabledDays);
+    } catch (err) {
+      console.error("Error fetching weekoffs:", err);
+    }
+  };
+
+  fetchWeekoffs();
+}, []); // run once on mount
+
 
   useEffect(() => {
     if (activeTab === "daily") {
@@ -195,7 +231,7 @@ useEffect(() => {
 
   const fetchDailyData = async () => {
   try {
-    const empId = localStorage.getItem("empID"); // get manager ID
+    const empId = localStorage.getItem("empID"); 
     if (!empId) return;
 
     const res = await axios.get("http://127.0.0.1:8000/attendance/daily", {
@@ -203,7 +239,7 @@ useEffect(() => {
       params: { 
         year: selectedYear, 
         month: selectedMonth, 
-        employee_id: parseInt(empId) // send manager_id
+        employee_id: parseInt(empId) 
       },
     });
 
@@ -233,12 +269,12 @@ useEffect(() => {
 
 const fetchSavedAttendance = async () => {
   try {
-    const empId = localStorage.getItem("empID"); // get manager ID
+    const empId = localStorage.getItem("empID"); 
     if (!empId) return;
 
     const res = await axios.get("http://127.0.0.1:8000/attendance/daily", {
       headers: { Authorization: `Bearer ${token}` },
-      params: { employee_id: parseInt(empId) } // send manager_id
+      params: { employee_id: parseInt(empId) } 
     });
 
     setDailyData(res.data);
@@ -247,54 +283,87 @@ const fetchSavedAttendance = async () => {
     setToast({ message: "Error fetching saved attendance", isError: true });
   }
 };
+  
 
-
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
   try {
-    const empId = localStorage.getItem("empID");
+    const empId = parseInt(localStorage.getItem("empID"));
     if (!empId) {
-      setToast({ message: "Manager ID not found", isError: true });
+      setToast({ message: "Employee ID not found", isError: true });
       return;
     }
 
-const payload = Object.fromEntries(
-  Object.entries(attendance)
-    .filter(([date, entry]) => entry.action)
-    .map(([date, entry]) => [
-      date,
-      {
-        date,
-        action: entry.action,
-        hours: Number(entry.hours) || 0,
-        project_ids: (entry.projects || []).map(p => {
-          const proj = projects.find(prj => prj.label === p.label);
-          return proj ? proj.value : null;
-        }).filter(Boolean),
-        sub_tasks: (entry.subTasks || []).map(st => st.subTask).filter(Boolean),
-      }
-    ])
-);
-
-await axios.post(
-  `http://127.0.0.1:8000/attendance/?manager_id=${empId}`,
-  payload,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
+    // Weekoffs submission (unchanged)
+    if (disabledDays && disabledDays.length > 0) {
+      const weekStart = formatDate(weekDates[0]);
+      const weekEnd = formatDate(weekDates[weekDates.length - 1]);
+ const weekoffPayload = {
+  employee_id: empId,
+  week_start: weekStart,
+  week_end: weekEnd,
+  off_days: disabledDays, // now contains ["Monday", "Sunday"] instead of ["2025-09-22", "2025-09-28"]
+};
 
 
+      console.log("Weekoffs payload:", weekoffPayload);
 
-    setToast({ message: "Attendance submitted!", isError: false });
+      await axios.post(
+        "http://127.0.0.1:8000/weekoffs/",
+        weekoffPayload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    }
+
+    // Attendance payload as a dict keyed by date
+    const attendancePayload = Object.fromEntries(
+      Object.entries(attendance)
+        // .filter(([_, entry]) => entry.action)
+        .map(([date, entry]) => [
+          date,
+          {
+            date,
+            action: entry.action,
+            hours: Number(entry.hours) || 0,
+            project_ids: (entry.projects || [])
+              .map(p => projects.find(prj => prj.label === p.label)?.value)
+              .filter(Boolean),
+            sub_tasks: (entry.subTasks || []).map(st => st.subTask).filter(Boolean),
+          },
+        ])
+    );
+
+    if (Object.keys(attendancePayload).length === 0) {
+      setToast({ message: "No valid attendance records to submit", isError: true });
+      return;
+    }
+
+    console.log("Attendance payload:", attendancePayload);
+
+    await axios.post(
+      `http://127.0.0.1:8000/attendance/?employee_id=${empId}`,
+      attendancePayload, // send dict directly
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setToast({
+      message: `Attendance${disabledDays && disabledDays.length > 0 ? " and weekoffs" : ""} submitted!`,
+      isError: false,
+    });
   } catch (err) {
-    console.error("Error submitting attendance:", err.response?.data || err);
-    setToast({ message: "Error submitting attendance", isError: true });
+    console.error("Error submitting data:", err.response?.data || err);
+    setToast({ message: "Error submitting data", isError: true });
   }
 };
 
 
 
 
+
+
+
   return (
     <div className="attendance-container container py-4">
+      <h3 className="text-center">Employee Attendance</h3>
       {toast.message && (
         <div
           className={`toast-message ${toast.isError ? "error" : "success"}`}
@@ -344,6 +413,29 @@ await axios.post(
         {/* Weekly Table */}
         {activeTab === "weekly" && (
           <>
+            {/* Week Off Selector */}
+<div className="d-flex justify-content-center align-items-center mb-3">
+  <strong className="me-3">Select your week off:</strong>
+  {weekDates.map((date, idx) => {
+    const key = formatDate(date);
+    return (
+      <div key={idx} className="mx-2">
+        <input
+  type="checkbox"
+  id={`disable-${key}`}
+  checked={disabledDays.includes(date.toLocaleDateString("en-US", { weekday: "long" }))}
+  onChange={() => toggleDayDisable(date)}
+/>
+
+        <label htmlFor={`disable-${key}`} className="ms-1">
+          {date.toLocaleDateString("en-US", { weekday: "short" })}
+        </label>
+      </div>
+    );
+  })}
+</div>
+
+
             <table className="table table-bordered text-center">
               <thead>
                 <tr>
@@ -360,8 +452,10 @@ await axios.post(
                 {weekDates.map((date) => {
                   const key = formatDate(date);
                   const entry = attendance[key] || { projects: [], subTasks: [] };
+                  const isDisabled = disabledDays.includes(key);
+
                   return (
-                    <tr key={key}>
+                    <tr key={key}  className={isDisabled ? "table-secondary" : ""}>
                       <td>
                         {date.toLocaleDateString("en-US", { weekday: "long" })}
                       </td>
@@ -373,9 +467,11 @@ await axios.post(
                         <select
                           className="form-control"
                           value={entry.action || ""}
+                          disabled={isDisabled}
                           onChange={(e) =>
-                            handleFieldChange(date, "action", e.target.value)
+                            handleFieldChange(date, "action", e.target.value)   
                           }
+                         
                         >
                           <option value="">-- Select --</option>
                           <option value="Present">Present</option>
@@ -391,20 +487,24 @@ await axios.post(
                           type="number"
                           className="form-control"
                           value={entry.hours || ""}
+                          disabled={isDisabled}
                           onChange={(e) =>
                             handleFieldChange(date, "hours", e.target.value)
                           }
+                        
                         />
                       </td>
                       <td>
                         <Select
                           options={projects}
                           isMulti
-                          value={entry.projects}
+                          value={entry.projects}     
+                          disabled={isDisabled}
                           onChange={(vals) =>
                             handleFieldChange(date, "projects", vals)
                           }
-                          classNamePrefix="multi-select"
+                        
+                          classNamePrefix="multi-select"  
                         />
                       </td>
                       <td>
@@ -414,12 +514,14 @@ await axios.post(
                               key={i}
                               className="subtask-item"
                               style={{ borderLeftColor: getProjectColor(st.project) }}
-                              onClick={() => {
-                                setCurrentDateKey(key);
-                                setEditingSubTask({ dateKey: key, index: i });
-                                setSubTaskInput({ project: st.project, subTask: st.subTask });
-                                setShowSubTaskModal(true);
-                              }}
+                             onClick={() => {
+                  if (!isDisabled) {
+                    setCurrentDateKey(key);
+                    setEditingSubTask({ dateKey: key, index: i });
+                    setSubTaskInput({ project: st.project, subTask: st.subTask });
+                    setShowSubTaskModal(true);
+                  }
+                }}
                             >
                               <strong>{st.project}</strong>: {st.subTask}
                             </div>
@@ -435,13 +537,14 @@ await axios.post(
                             )
                           }
                           disabled={
-                            !entry.projects?.length ||
-                            entry.subTasks?.some(
-                              (st) =>
-                                st.project === entry.projects?.[entry.projects.length - 1]?.label
-                            )
-                          }
-                        >
+                           isDisabled ||
+                           !entry.projects?.length ||
+                           entry.subTasks?.some(
+                             (st) =>
+                               st.project === entry.projects?.[entry.projects.length - 1]?.label
+                           )
+                         }
+                           >
                           Add Task
                         </button>
                       </td>

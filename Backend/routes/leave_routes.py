@@ -1,7 +1,7 @@
 # app/routes/leave_routes.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from datetime import datetime
+from datetime import datetime,timedelta
 from sqlalchemy import text
 from database import get_session
 from models.leave_model import LeaveManagement
@@ -15,6 +15,41 @@ router = APIRouter()
 @router.post("/apply_leave")
 def apply_leave(leave: dict, session: Session = Depends(get_session)):
     try:
+        # 1. Get employee
+        employee = session.get(User, leave["employee_id"])
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+
+        location_id = employee.location_id
+        weekoffs = get_employee_weekoffs(employee.id, session)  # e.g. {"Saturday","Sunday","Monday"}
+
+        start_date = datetime.strptime(leave["start_date"], "%Y-%m-%d").date()
+        end_date = datetime.strptime(leave["end_date"], "%Y-%m-%d").date()
+
+        # 2. Fetch holidays for location
+        holidays = session.execute(
+            text("""
+                SELECT holiday_date 
+                FROM master_calendar 
+               WHERE location_id = :loc 
+                  AND holiday_date BETWEEN :start AND :end
+            """),
+            {"loc": location_id, "start": start_date, "end": end_date}
+        ).all()
+        holiday_dates = {h[0] for h in holidays}
+
+        # 3. Calculate leave days excluding holidays + weekoffs
+        total_days = 0
+        day = start_date
+        while day <= end_date:
+            if day not in holiday_dates and day.strftime("%A") not in weekoffs:
+                total_days += 1
+            day += timedelta(days=1)
+
+        if total_days <= 0:
+            raise HTTPException(status_code=400, detail="Leave falls only on holidays/weekoffs")
+
+        # 4. Call stored procedure (still inserts raw start/end range in DB)
         result = session.execute(
             text("""
                 SELECT * FROM apply_leave(
@@ -22,40 +57,38 @@ def apply_leave(leave: dict, session: Session = Depends(get_session)):
                     :leave_type, 
                     :reason, 
                     :start_date, 
-                    :end_date
+                    :end_date,
+                    :no_of_days
                 )
             """),
             {
                 "employee_id": leave["employee_id"],
                 "leave_type": leave["leave_type"],
                 "reason": leave["reason"],
-                "start_date": leave["start_date"],
-                "end_date": leave["end_date"],
+                "start_date": start_date,
+                "end_date": end_date,
+                "no_of_days": total_days  # ✅ dynamic corrected leave days
             },
         )
-
         row = result.fetchone()
         session.commit()
 
         if not row:
             raise HTTPException(status_code=500, detail="Leave not created")
 
-        # ✅ Map DB → frontend keys
         return {
             "id": row.id,
             "leaveType": row.leave_type,
             "startDate": row.start_date,
             "endDate": row.end_date,
-            "totalDays": row.no_of_days,
-           
+            "totalDays": total_days,  # ✅ dynamic corrected leave days
             "reason": row.reason,
-            "status": row.status
+            "status": row.status,
         }
 
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Error applying leave: {str(e)}")
-
 # ------------------ EMPLOYEE LEAVE HISTORY ------------------ #
 @router.get("/all_leaves/{employee_id}", response_model=list[LeaveResponse])
 def get_all_leaves(employee_id: int, session: Session = Depends(get_session)):
@@ -172,7 +205,7 @@ def get_manager_leave_requests(manager_id: int, status: str = None, session: Ses
     ]
 
 
-@router.get("/leave-requests/{hr_id}")
+@router.get("/hr/leave-requests/{hr_id}")
 def get_hr_leave_requests(hr_id: int, status: str = None, session: Session = Depends(get_session)):
     """
     Get all leave requests assigned to this HR after manager approval.
@@ -256,3 +289,22 @@ def update_leave_balance(
     session.commit()
     session.refresh(balance)
     return balance
+
+def get_employee_weekoffs(employee_id: int, session: Session):
+    """
+    Fetches the weekoff days (day names) for a given employee.
+    Returns a set of day names, e.g., {"Monday", "Wednesday"}.
+    """
+    result = session.execute(
+        text("SELECT off_days FROM weekoffs WHERE employee_id = :emp"),
+        {"emp": employee_id}
+    ).all()
+    
+    # Each row[0] is already a list/set of day names
+    # Flatten all rows into a single set
+    weekoff_days = set()
+    for row in result:
+        if row[0]:  # check not null
+            weekoff_days.update(row[0])
+    
+    return weekoff_days

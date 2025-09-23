@@ -122,7 +122,7 @@ export default function ManagerLeaveManagement() {
                           <td>{leave.leave_type}</td>
                           <td>{leave.start_date}</td>
                           <td>{leave.end_date}</td>
-                          <td>{leave.days}</td>
+                          <td>{leave.no_of_days}</td>
                           <td>
                             <button
                               className="btn btn-success btn-sm me-2"
@@ -203,7 +203,8 @@ export default function ManagerLeaveManagement() {
                           <td>{leave.leave_type}</td>
                           <td>{leave.start_date}</td>
                           <td>{leave.end_date}</td>
-                          <td>{leave.days}</td>
+                          <td>{leave.no_of_days}</td>
+                          <td>{leave.final_status}</td>
                           <td>
                             <span
                               className={`badge ${

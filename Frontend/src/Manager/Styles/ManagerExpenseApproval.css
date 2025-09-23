@@ -14,18 +14,19 @@
   width: 100%;
   border-collapse: collapse;
 }
-
+ 
 .manager-table th,
 .manager-table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
+  color: #000;
 }
-
+ 
 .manager-table th {
   background: #f5f5f5;
 }
-
+ 
 .status {
   white-space: nowrap;
   font-weight: bold;
@@ -41,7 +42,7 @@
 .status.rejected {
   color: red;
 }
-
+ 
 .btn-view,
 .btn-save {
   margin: 0 4px;
@@ -50,7 +51,7 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
+ 
 .btn-view {
   background: #007bff;
   color: white;
@@ -59,15 +60,15 @@
   background: teal;
   color: white;
 }
-
+ 
 .expand-row td {
   background: #fafafa;
 }
-
+ 
 .details {
   padding: 10px;
 }
-
+ 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .manager-table,
@@ -78,17 +79,17 @@
   .manager-table tr {
     display: block;
   }
-
+ 
   .manager-table tr {
     margin-bottom: 15px;
   }
-
+ 
   .manager-table td {
     padding: 10px;
     border: none;
     position: relative;
   }
-
+ 
   .manager-table td::before {
     content: attr(data-label);
     font-weight: bold;
@@ -99,4 +100,9 @@
 .btn-save:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+.btn-confirm{
+ width: fit-content;
+ padding: 1px 12px;
+ border-radius: 5px;
 }

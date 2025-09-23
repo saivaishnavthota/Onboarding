@@ -10,7 +10,8 @@ class LeaveManagement(SQLModel, table=True):
     reason: Optional[str]
     start_date: date
     end_date: date
-    no_of_days: Optional[int] = Field(default=None, sa_column_kwargs={"server_default": "((end_date - start_date) + 1)"})
+    no_of_days:int=Field(default=0)
+    
     status: str = Field(default="Pending", max_length=20)
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
     updated_at: Optional[datetime] = Field(default_factory=datetime.now)

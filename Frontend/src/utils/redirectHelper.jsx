@@ -22,6 +22,7 @@ export const getRedirectRoute = (user, isForgotPassword = false) => {
     // Normal active employee → dashboard based on role
     if (role === "HR") return "/hr-dashboard";
     if (role === "Manager") return "/manager-dashboard";
+    if(role=="Account Manager") return "/account-dashboard/profile";
     return "/employee-dashboard";
   }
 

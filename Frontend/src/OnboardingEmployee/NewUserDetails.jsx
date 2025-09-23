@@ -1,268 +1,339 @@
 import React, { useState, useEffect } from "react";
-import { FaUpload, FaCheckCircle, FaCheck } from "react-icons/fa";
 import axios from "axios";
-import "./NewUserDocsUpload.css";
+import "./NewUserDetails.css";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const acceptedFormats = [".pdf", ".doc", ".docx", ".jpg", ".png"];
-const user = JSON.parse(localStorage.getItem("user") || "{}");
-const employeeId = user.id;
-
-const sections = {
-  employeeDocs: {
-    title: "Employee Documents",
-    fields: [
-      { name: "updated_resume", label: "Updated Resume", required: false },
-      { name: "offer_letter", label: "Offer Letter", required: false },
-      { name: "latest_compensation_letter", label: "Latest Compensation Letter", required: false },
-      { name: "experience_relieving_letter", label: "Experience & Relieving Letter", required: false },
-      { name: "latest_3_months_payslips", label: "Latest 3 months Pay Slips", required: false },
-      { name: "form16_or_12b_or_taxable_income", label: "Form 16/ Form 12B / Taxable Income Statement", required: false },
-    ],
-  },
-  educationDocs: {
-    title: "Educational Documents",
-    fields: [
-      { name: "ssc_certificate", label: "SSC Certificate", required: false },
-      { name: "hsc_certificate", label: "HSC Certificate", required: false },
-      { name: "hsc_marksheet", label: "HSC Marksheet", required: false },
-      { name: "graduation_marksheet", label: "Graduation Marksheet", required: false },
-      { name: "latest_graduation_certificate", label: "Latest Graduation", required: true },
-      { name: "postgraduation_marksheet", label: "Post-Graduation Marksheet", required: false },
-      { name: "postgraduation_certificate", label: "Post-Graduation Certificate", required: false },
-    ],
-  },
-  identityDocs: {
-    title: "Identity Proof",
-    fields: [
-      { name: "aadhar", label: "Aadhar", required: true },
-      { name: "pan", label: "PAN", required: true },
-      { name: "passport", label: "Passport", required: false },
-    ],
-  },
-};
-
-export default function NewUserDocsUpload() {
-  const [files, setFiles] = useState({});
-  const [previewUrls, setPreviewUrls] = useState({});
-  const [openSection, setOpenSection] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
+export default function NewUserDetails() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const employeeId = user?.employeeId || user?.id;
+  
+  const [employee, setEmployee] = useState({
+    employee_id: employeeId,
+    full_name: "",
+    personal_email: "",
+    dob: "",
+    contact_no: "",
+    address: "",
+    graduation_year: "",
+    work_experience_years: "",
+    emergency_contact_name: "",
+    emergency_contact_number: "",
+    emergency_contact_relation: "",
+    gender: "",
+  });
 
-  const isFormValid = () => {
-    for (const [, section] of Object.entries(sections)) {
-      for (const field of section.fields) {
-        if (field.required && !files[field.name]) return false;
-      }
-    }
-    return true;
-  };
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ message: null, isError: false });
+  const [phoneError, setPhoneError] = useState("");
+  const [emergencyError, setEmergencyError] = useState("");
 
-  const handleDraft = async () => {
-    const formData = new FormData();
-    formData.append("employeeId", employeeId);
-
-    Object.keys(files).forEach((key) => {
-      if (files[key] instanceof File) formData.append(key, files[key]);
-    });
-
-    try {
-      await axios.post("http://127.0.0.1:8000/onboarding/upload", formData);
-      toast.success("Draft saved successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to save draft");
-    }
-  };
-
-  const handleSubmitAll = async () => {
-    if (!isFormValid()) {
-      toast.error("Please upload all required documents before submitting!");
-      return;
-    }
-
-    setSubmitting(true);
-    const formData = new FormData();
-    formData.append("employeeId", employeeId);
-    Object.keys(files).forEach((key) => {
-      if (files[key] instanceof File) formData.append(key, files[key]);
-    });
-
-    try {
-      await axios.post("http://127.0.0.1:8000/onboarding/upload", formData);
-      toast.success("Documents submitted successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error while submitting employee documents.");
-      setSubmitting(false);
-    }
-  };
-
-  const handleFileChange = (e, field) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFiles({ ...files, [field]: file });
-      setPreviewUrls({ ...previewUrls, [field]: URL.createObjectURL(file) });
-    }
-  };
-
-  const getUploadedCount = (section) =>
-    section.fields.filter((f) => files[f.name]).length;
-
+  // Fetch existing employee details on component mount
   useEffect(() => {
-    async function fetchUploadedDocuments() {
+    const fetchEmployeeDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://127.0.0.1:8000/onboarding/doc/${employeeId}`, {
-          withCredentials: true,
-        });
-
-        let documentsData = response.data;
-        if (response.data?.data) documentsData = response.data.data;
-
-        const fetchedFiles = {};
-        const fetchedPreviews = {};
-
-        Object.keys(documentsData).forEach((field) => {
-          if (field === "employeeId" || field === "uploaded_at") return;
-          const fieldValue = documentsData[field];
-          if (fieldValue === true || (typeof fieldValue === "string" && fieldValue.startsWith("http"))) {
-            let fileUrl = fieldValue === true ? `http://127.0.0.1:8000/onboarding/doc/${employeeId}/${field}` : fieldValue;
-            let fileName = fieldValue === true ? `${field}_document.pdf` : fieldValue.split("/").pop();
-            fetchedFiles[field] = { name: fileName, url: fileUrl, isExisting: true };
-            fetchedPreviews[field] = fileUrl;
+        console.log("Fetching details for employee ID:", employeeId); // Debug log
+        
+        // Try to fetch existing employee details by email if employee_id fails
+        let response;
+        try {
+          response = await axios.get(`http://127.0.0.1:8000/onboarding/details/${employeeId}`);
+        } catch (firstError) {
+          if (user.email) {
+            console.log("Trying to fetch by email:", user.email);
+            response = await axios.get(`http://127.0.0.1:8000/onboarding/details/email/${user.email}`);
+          } else {
+            throw firstError;
           }
-        });
-
-        setFiles(fetchedFiles);
-        setPreviewUrls(fetchedPreviews);
-
-        const documentCount = Object.keys(fetchedFiles).length;
-        if (documentCount > 0) toast.success(`${documentCount} previously uploaded document(s) loaded successfully!`);
-      } catch (err) {
-        console.error("Error fetching uploaded docs:", err);
-        if (err.response?.status !== 404) toast.error("Error loading previously uploaded documents");
+        }
+        console.log("API Response:", response.data); // Debug log
+        
+        if (response.data && response.data.data) {
+          // If data exists, populate the form with existing details
+          // Note: API returns nested data: {status: 'success', data: {...}}
+          const apiData = response.data.data;
+          const fetchedData = {
+            employee_id: employeeId,
+            full_name: apiData.full_name || "",
+            personal_email: apiData.personal_email || user.email || "",
+            dob: apiData.dob || "",
+            contact_no: apiData.contact_no || "",
+            address: apiData.address || "",
+            graduation_year: apiData.graduation_year || "",
+            work_experience_years: apiData.work_experience_years || "",
+            emergency_contact_name: apiData.emergency_contact_name || "",
+            emergency_contact_number: apiData.emergency_contact_number || "",
+            emergency_contact_relation: apiData.emergency_contact_relation || "",
+            gender: apiData.gender || "",
+          };
+          
+          console.log("Setting employee data:", fetchedData); // Debug log
+          setEmployee(fetchedData);
+          showToast("Existing details loaded successfully!");
+        }
+      } catch (error) {
+        console.log("Error details:", error.response || error); // Debug log
+        
+        // If no existing data found (404) or other error, use default values
+        if (error.response?.status === 404) {
+          console.log("No existing details found, starting fresh");
+          // Set email from user data if available
+          if (user?.email) {
+            setEmployee((prev) => ({
+              ...prev,
+              personal_email: user.email,
+            }));
+          }
+        } else {
+          console.error("Error fetching employee details:", error);
+          showToast("Error loading existing details", true);
+        }
       } finally {
         setLoading(false);
       }
+    };
+
+    console.log("Employee ID:", employeeId); // Debug log
+    console.log("User data:", user); // Debug log
+
+    if (employeeId) {
+      fetchEmployeeDetails();
+    } else {
+      console.log("No employee ID found");
+      setLoading(false);
+    }
+  }, [employeeId, user.email]);
+
+  const showToast = (message, isError = false) => {
+    setToast({ message, isError });
+    setTimeout(() => setToast({ message: null, isError: false }), 3000);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEmployee((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+
+    setEmployee((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "contact_no") {
+      if (value && value === employee.emergency_contact_number) {
+        setPhoneError("Contact number and Emergency contact number cannot be the same");
+      } else {
+        setPhoneError("");
+      }
     }
 
-    if (employeeId) fetchUploadedDocuments();
-    else setLoading(false);
-  }, [employeeId]);
+    if (name === "emergency_contact_number") {
+      if (value && value === employee.contact_no) {
+        setEmergencyError("Emergency contact number cannot be the same as contact number");
+      } else {
+        setEmergencyError("");
+      }
+    }
+  };
 
+  const handleSaveDraft = async () => {
+    if (employee.contact_no === employee.emergency_contact_number) {
+      showToast("Contact number and Emergency contact number cannot be the same", true);
+      return;
+    }
+    try {
+      await axios.post("http://127.0.0.1:8000/onboarding/details", employee);
+      showToast("Draft saved successfully!");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to save draft", true);
+    }
+  };
+
+  const handleGoToDocs = async () => {
+    if (employee.contact_no === employee.emergency_contact_number) {
+      showToast("Contact number and Emergency contact number cannot be the same", true);
+      return;
+    }
+    try {
+      const res = await axios.post("http://127.0.0.1:8000/onboarding/details", employee);
+      localStorage.setItem("employeeDetails", JSON.stringify(res.data));
+      showToast("Employee details submitted successfully!");
+      navigate("/new-user-form/docs");
+    } catch (err) {
+      console.error(err);
+      showToast("Error submitting employee details", true);
+    }
+  };
+
+  // Show loading state
   if (loading) {
     return (
-      <div className="upload-container">
-        <div className="upload-box">
+      <div className="new-container">
+        <div className="employee-details">
           <div className="loading-state">
-            <p>Loading your documents...</p>
+            <p>Loading your details...</p>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (submitting) {
-    return (
-      <div className="thank-you-container">
-        <div className="thank-you-box">
-          <div className="green-circle">
-            <FaCheck className="tick-icon" />
-          </div>
-          <h2>Thank You for Completing Onboarding Process</h2>
-          <p>We will get back to you soon...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="upload-container">
-      <ToastContainer position="top-right" autoClose={3000} />
+    <div className="new-container">
+      {/* Toast Notification */}
+      {toast.message && (
+        <div className={`toast-message ${toast.isError ? "error" : "success"}`}>
+          {toast.message}
+        </div>
+      )}
 
-      <div className="upload-box">
-        <h4>Documents Upload</h4>
-        <h6 id="text">
-          <span className="required">*</span> marked documents are mandatory
-        </h6>
-
-        {Object.entries(sections).map(([key, section]) => (
-          <div key={key} className="section">
-            <div
-              className="section-header"
-              onClick={() => setOpenSection(openSection === key ? null : key)}
-            >
-              <h5>{section.title}</h5>
-              <span className="count">{getUploadedCount(section)} / {section.fields.length} uploaded</span>
-              <span className="arrow">{openSection === key ? "▲" : "▼"}</span>
+      <div className="employee-details">
+        <div className="details-form-section">
+          <h2>Onboarding Employee Details</h2>
+          <h4>Please fill the details below</h4>
+          <div className="form-grid">
+            <div>
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="full_name"
+                value={employee.full_name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Email</label>
+              <input
+                type="email"
+                name="personal_email"
+                value={employee.personal_email}
+                onChange={handleChange}
+                readOnly
+                required
+              />
             </div>
 
-            {openSection === key && (
-              <div className="section-content">
-                {section.fields.map((field) => (
-                  <div
-                    key={field.name}
-                    className={`upload-card ${files[field.name] ? "uploaded" : ""}`}
-                    onClick={() => document.getElementById(field.name).click()}
-                  >
-                    <div className="upload-label">
-                      {field.label} {field.required && <span className="required">*</span>}
-                    </div>
+            <div>
+              <label>Date Of Birth</label>
+              <input
+                type="date"
+                name="dob"
+                value={employee.dob}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-                    <div className="upload-status">
-                      {files[field.name] ? (
-                        <>
-                          <FaCheckCircle className="icon success" /> 
-                          {files[field.name].isExisting ? "Previously Uploaded" : "Uploaded"}
-                        </>
-                      ) : (
-                        <>
-                          <FaUpload className="icon" /> Click to upload
-                        </>
-                      )}
-                    </div>
-
-                    <input
-                      id={field.name}
-                      type="file"
-                      accept={acceptedFormats.join(",")}
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFileChange(e, field.name)}
-                      disabled={submitting}
-                    />
-
-                    {files[field.name] && (
-                      <a
-                        href={previewUrls[field.name]}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="preview-link"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {files[field.name].name || "View File"}
-                      </a>
-                    )}
-                  </div>
-                ))}
-                <p className="note">Accepted formats: {acceptedFormats.join(", ")}</p>
+            {/* Contact Number */}
+            <div>
+              <label>Contact Number</label>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="number"
+                  name="contact_no"
+                  value={employee.contact_no}
+                  onChange={handlePhoneChange}
+                  required
+                  style={{ flex: 1 }}
+                />
               </div>
-            )}
-          </div>
-        ))}
+              {phoneError && <small style={{ color: "red" }}>{phoneError}</small>}
+            </div>
 
-        <div className="button-group">
-          <button type="button" className="btn back" onClick={() => navigate("/new-user-form")} disabled={submitting}>
-            ⬅ Back
-          </button>
-          <button type="button" className="btn draft" onClick={handleDraft} disabled={submitting}>
+            <div>
+              <label>Gender</label>
+              <select
+                name="gender"
+                className="form-select"
+                value={employee.gender}
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Latest Graduation Year</label>
+              <input
+                type="number"
+                name="graduation_year"
+                value={employee.graduation_year}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label id="star">Work Experience (years)</label>
+              <input
+                type="number"
+                name="work_experience_years"
+                value={employee.work_experience_years}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Emergency Contact */}
+            <div className="form-grid full-width">
+              <div>
+                <label>Emergency Contact Name</label>
+                <input
+                  type="text"
+                  name="emergency_contact_name"
+                  value={employee.emergency_contact_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div>
+                <label>Emergency Contact Number</label>
+                <input
+                  type="number"
+                  name="emergency_contact_number"
+                  value={employee.emergency_contact_number}
+                  onChange={handlePhoneChange}
+                  required
+                />
+                {emergencyError && (
+                  <small style={{ color: "red" }}>{emergencyError}</small>
+                )}
+              </div>
+              <div>
+                <label>Relationship</label>
+                <input
+                  type="text"
+                  name="emergency_contact_relation"
+                  value={employee.emergency_contact_relation}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="full-width">
+              <label>Address</label>
+              <textarea
+                name="address"
+                value={employee.address}
+                onChange={handleChange}
+                required
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div className="button-section">
+          <button className="new-button" onClick={handleSaveDraft}>
             Save Draft
           </button>
-          <button type="button" className="btn submit" onClick={handleSubmitAll} disabled={submitting}>
-            Submit All
+          <button className="new-button" onClick={handleGoToDocs}>
+            Documents Upload
           </button>
         </div>
       </div>

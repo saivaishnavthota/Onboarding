@@ -488,9 +488,9 @@ def get_employee_profile(employee_id: int, session: Session = Depends(get_sessio
             "onboarding_status": employee.o_status,
             "managers": managers,
             "hrs": hrs,
-            "employmentType": details.employment_type if details else None,
+            "employmentType": employee.employment_type if details else None,
             "contactNumber": details.contact_no if details else None,
-            "dateOfJoining": details.doj if details else None,
+            "dateOfJoining": employee.doj if details else None,
             "location": location_name
         }
 

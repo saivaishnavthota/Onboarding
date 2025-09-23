@@ -221,7 +221,7 @@ def list_all_expenses(
             {
                 "id": exp.request_id,
                 "employeeName": employee.name if employee else "Unknown",
-                "employeeEmail": employee.email if employee else "Unknown",
+                "employeeEmail": employee.company_email if employee else "Unknown",
                 "category": exp.category,
                 "amount": exp.amount,
                 "currency": exp.currency,
@@ -347,7 +347,7 @@ def list_hr_expenses(
             {
                 "id": exp.request_id,
                 "employeeName": employee.name if employee else "Unknown",
-                "employeeEmail": employee.email if employee else "Unknown",
+                "employeeEmail": employee.company_email if employee else "Unknown",
                 "category": exp.category,
                 "amount": exp.amount,
                 "currency": exp.currency,
@@ -461,7 +461,7 @@ def list_acc_mgr_expenses(
             {
                 "id": exp.request_id,
                 "employeeName": employee.name if employee else "Unknown",
-                "employeeEmail": employee.email if employee else "Unknown",
+                "employeeEmail": employee.company_email if employee else "Unknown",
                 "category": exp.category,
                 "amount": exp.amount,
                 "currency": exp.currency,

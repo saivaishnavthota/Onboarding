@@ -87,10 +87,10 @@ export default function OnboardingDocs() {
       .filter((doc) => doc.required)
       .every((doc) => doc.status === "Uploaded");
 
-    if (!allRequiredUploaded) {
-      toast.error("⚠️ All required documents must be uploaded before approving!");
-      return;
-    }
+    // if (!allRequiredUploaded) {
+    //   toast.error("⚠️ All required documents must be uploaded before approving!");
+    //   return;
+    // }
 
     try {
       await axios.post(
@@ -255,7 +255,7 @@ export default function OnboardingDocs() {
       {showDocModal &&
         ReactDOM.createPortal(
           <div className="modal-overlay">
-            <div className="modal-card docs-modal-card">
+            <div className="docs-modal-card">
               <h4>Documents of {selectedEmployee?.name}</h4>
               {loadingDocs ? (
                 <p>Loading documents...</p>
@@ -295,13 +295,13 @@ export default function OnboardingDocs() {
                             <span className="text-muted">No file available</span>
                           )}
                         </div>
-                        <div
+                        {/* <div
                           className={`required-tag ${
                             doc.required ? "" : "optional"
                           }`}
                         >
                           {doc.required ? "Required" : "Optional"}
-                        </div>
+                        </div> */}
                       </div>
                     ))}
                   </div>
@@ -313,7 +313,7 @@ export default function OnboardingDocs() {
                         (doc) => doc.status === "Approved"
                       )}
                     >
-                      Approve All Documents
+                      Approve  Documents
                     </button>
                   </div>
                 </>

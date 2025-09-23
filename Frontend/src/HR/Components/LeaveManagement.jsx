@@ -18,7 +18,7 @@ const user = JSON.parse(localStorage.getItem("user"));
       setLoading(true);
       const [pendingRes, allRes] = await Promise.all([
         axios.get(`http://127.0.0.1:8000/hr/pending-leaves/${user.id}`),
-        axios.get(`http://127.0.0.1:8000/leave-requests/${user.id}`),
+        axios.get(`http://127.0.0.1:8000/hr/leave-requests/${user.id}`),
       ]);
       setPendingLeaves(pendingRes.data);
       setAllRequests(allRes.data);
@@ -130,8 +130,8 @@ console.log("Pending:", pendingRes.data, "All:", allRes.data);
                           <td>{leave.leave_type}</td>
                           <td>{leave.start_date}</td>
                           <td>{leave.end_date}</td>
-                          <td>{leave.days}</td>
-                          <td>{leave.reason}</td>
+                          <td>{leave.no_of_days}</td>
+                          <td>{leave.final_status}</td>
                           <td>
                             <button
                               className="btn btn-success btn-sm me-2"
@@ -202,8 +202,9 @@ console.log("Pending:", pendingRes.data, "All:", allRes.data);
                           <td>{leave.leave_type}</td>
                           <td>{leave.start_date}</td>
                           <td>{leave.end_date}</td>
-                          <td>{leave.days}</td>
+                          <td>{leave.no_of_days}</td>
                           <td>{leave.reason}</td>
+                          <td>{leave.final_status}</td>
                           <td>
                             <span
                               className={`badge ${

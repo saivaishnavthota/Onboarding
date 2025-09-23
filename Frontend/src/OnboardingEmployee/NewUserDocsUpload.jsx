@@ -168,8 +168,8 @@ export default function NewUserDocsUpload() {
   if (submitting) return (
     <div className="thank-you-container">
       <div className="green-circle"><FaCheck className="tick-icon" /></div>
-      <h2>Thank You for Completing Onboarding Process</h2>
-      <p>We will get back to you soon...</p>
+      <h2 className="text-center">Thank You for Completing Onboarding Process</h2> 
+     
     </div>
   );
 
